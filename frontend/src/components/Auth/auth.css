@@ -1,0 +1,40 @@
+
+.auth-cont {
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  width: 100%;
+  height: 100%;
+  
+}
+
+.auth-form {
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  
+  width: 800px;
+  height: 600px;
+
+  gap: 5px;
+
+
+  border: 1px solid black;
+  border-radius: 4px;
+}
+
+
+.auth-form input {
+  height: 48px;
+  width: 156px;
+
+  border-radius: 4px;
+}
+
+.auth-form button {
+  border-radius: 4px;
+}
