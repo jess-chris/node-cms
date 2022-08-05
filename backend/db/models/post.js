@@ -23,7 +23,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     title: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: [1, 255]
+      }
     },
     content: {
       type: DataTypes.TEXT,
@@ -33,5 +36,40 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Post',
   });
+
+
+  Post.getPosts = async function() {
+
+    return await Post.findAll();
+  };
+
+
+  Post.createPost = async function({ user_id, title, content}) {
+
+    const post = await Post.create({ user_id, title, content });
+
+    return await Post.findByPk(post.id);
+  };
+
+
+  Post.editPost = async function({ id, title, content }) {
+
+    const post = await Post.findByPk(id);
+
+    return await post.update({
+      title,
+      content
+    });
+  };
+
+
+  Post.deletePost = async function(id) {
+
+    const post = await Post.findByPk(id);
+
+    return await post.destroy();
+  };
+
+
   return Post;
 };

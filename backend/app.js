@@ -16,6 +16,12 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 
+if (!isProduction) {
+  // enable cors only in development
+  app.use(cors());
+}
+
+
 app.use(
   helmet.crossOriginResourcePolicy({ 
     policy: "cross-origin" 

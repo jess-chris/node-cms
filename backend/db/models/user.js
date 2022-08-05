@@ -71,6 +71,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       loginUser: {
         attributes: {}
+      },
+      allUsers: {
+        attributes: {
+          exclude: ['password']
+        }
+      },
+      firstTimeCheck: {
+        attributes: {
+          exclude: ['username', 'email', 'password', 'createdAt', 'updatedAt', 'access_level', 'user_avatar', 'display_name']
+        }
       }
     },
     sequelize,
@@ -90,6 +100,11 @@ module.exports = (sequelize, DataTypes) => {
 
   User.getCurrentUser = async function(id) {
     return await User.scope('currentUser').findByPk(id);
+  };
+
+
+  User.getAllUsers = async function() {
+    return await User.scope('allUsers').findAll();
   };
 
 
@@ -117,6 +132,13 @@ module.exports = (sequelize, DataTypes) => {
     const user = await User.create({ username, email, password: pwHash });
 
     return await User.scope('currentUser').findByPk(user.id);
+  };
+
+
+  User.isFirstRun = async function() {
+
+    return await User.scope('firstTimeCheck').findOne();
+
   };
 
   return User;

@@ -1,4 +1,6 @@
 'use strict';
+
+
 const {
   Model
 } = require('sequelize');
@@ -16,7 +18,10 @@ module.exports = (sequelize, DataTypes) => {
   Page.init({
     page_name: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: [1, 50]
+      }
     },
     page_content: {
       type: DataTypes.TEXT,
@@ -24,11 +29,50 @@ module.exports = (sequelize, DataTypes) => {
     },
     enabled: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     }
   }, {
     sequelize,
     modelName: 'Page',
   });
+
+
+  Page.getPages = async function() {
+
+    return await Page.findAll();
+
+  };
+
+
+  Page.createPage = async function(name) {
+
+    const page = await Page.create({ name });
+
+    return await Page.findByPk(page.id);
+  };
+
+
+  Page.editPage = async function({ id, name, page_content, enabled }) {
+
+    const page = await Page.findByPk(id);
+
+    return await page.update({
+      name,
+      page_content, 
+      enabled
+    });
+  };
+
+
+  Page.deletePage = async function(id) {
+
+    const page = await Page.findByPk(id);
+
+    return await page.destroy();
+
+  };
+
+
   return Page;
 };

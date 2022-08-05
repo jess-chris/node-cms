@@ -24,6 +24,18 @@ const validateSignup = [
 ];
 
 
+const validateLogin = [
+  check('username')
+    .exists({ checkFalsy: true })
+    .notEmpty()
+    .withMessage('Please provide a valid username.'),
+  check('password')
+    .exists({ checkFalsy: true })
+    .notEmpty()
+    .withMessage("Please provide a password.")
+];
+
+
 const handleValidationErrors = (req, _res, next) => {
   const validationErrors = validationResult(req);
 
@@ -43,5 +55,6 @@ const handleValidationErrors = (req, _res, next) => {
 
 module.exports = {
   handleValidationErrors,
-  validateSignup
+  validateSignup,
+  validateLogin
 };
