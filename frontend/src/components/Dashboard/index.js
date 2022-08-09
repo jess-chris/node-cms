@@ -5,19 +5,19 @@ import Cookies from 'js-cookie';
 
 export default function Dashboard() {
 
-  const navigate = useNavigate();
-  const [sid, setSid] = useState(false);
+  // const navigate = useNavigate();
+  // const [sid, setSid] = useState(false);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    (async () => {
-      const checkSession = await Cookies.get('session');
-      if (checkSession) setSid(true);
-    })();
+  //   (async () => {
+  //     const checkSession = await Cookies.get('session');
+  //     if (checkSession) setSid(true);
+  //   })();
 
-  }, []);
+  // }, []);
 
-  if (!sid) navigate('/node-cms/login');
+  // if (!sid) navigate('/node-cms/login');
 
   return (
     <>

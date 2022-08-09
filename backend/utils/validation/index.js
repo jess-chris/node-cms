@@ -20,7 +20,8 @@ const validateSignup = [
   check('password')
     .exists({ checkFalsy: true })
     .isLength({ min: 8 })
-    .withMessage('Password must be at least 8 characters.')
+    .withMessage('Password must be at least 8 characters.'),
+  handleValidationErrors
 ];
 
 
@@ -32,11 +33,12 @@ const validateLogin = [
   check('password')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .withMessage("Please provide a password.")
+    .withMessage("Please provide a password."),
+  handleValidationErrors
 ];
 
 
-const handleValidationErrors = (req, _res, next) => {
+function handleValidationErrors(req, _res, next) {
   const validationErrors = validationResult(req);
 
   if (!validationErrors.isEmpty()) {

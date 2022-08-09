@@ -16,6 +16,63 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+
+    toSafeObject() {
+      const { id, username } = this;
+      return { id, username };
+    };
+  
+  
+    validatePassword(pw) {
+      return bcrypt.compareSync(pw, this.password.toString());
+    };
+  
+  
+    static async getCurrentUser(id) {
+      return await User.scope('currentUser').findByPk(id);
+    };
+  
+  
+    static async getAllUsers() {
+      return await User.scope('allUsers').findAll();
+    };
+  
+  
+    static async login({ username, password}) {
+  
+      const { Op } = require('sequelize');
+      const user = await User.scope('loginUser').findOne({
+        where: {
+          [Op.or]: {
+            username
+          }
+        }
+      });
+  
+      if (user && user.validatePassword(password)) {
+        return await User.scope('currentUser').findByPk(user.id);
+      }
+  
+    };
+  
+  
+    static async createUser({ username, email, password }) {
+  
+      const pwHash = bcrypt.hashSync(password);
+      const user = await User.create({ username, email, password: pwHash });
+  
+      return await User.scope('currentUser').findByPk(user.id);
+    };
+  
+  
+    static async isFirstRun() {
+  
+      return await User.scope('firstTimeCheck').findOne();
+  
+    };
+
+
   }
   User.init({
     username: {
@@ -52,7 +109,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     display_name: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       validate: {
         len: [0, 80]
       }
@@ -86,60 +143,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
-
-  User.prototype.toSafeObject = function() {
-    const { id, username } = this;
-    return { id, username };
-  };
-
-
-  User.prototype.validatePassword = function(pw) {
-    return bcrypt.compareSync(pw, this.password.toString());
-  };
-
-
-  User.getCurrentUser = async function(id) {
-    return await User.scope('currentUser').findByPk(id);
-  };
-
-
-  User.getAllUsers = async function() {
-    return await User.scope('allUsers').findAll();
-  };
-
-
-  User.login = async function({ username, password}) {
-
-    const { Op } = require('sequelize');
-    const user = await User.scope('loginUser').findOne({
-      where: {
-        [Op.eq]: {
-          username
-        }
-      }
-    });
-
-    if (user && user.validatePassword(password)) {
-      return await User.scope('currentUser').findByPk(user.id);
-    }
-
-  };
-
-
-  User.createUser = async function({ username, email, password }) {
-
-    const pwHash = bcrypt.hashSync(password);
-    const user = await User.create({ username, email, password: pwHash });
-
-    return await User.scope('currentUser').findByPk(user.id);
-  };
-
-
-  User.isFirstRun = async function() {
-
-    return await User.scope('firstTimeCheck').findOne();
-
-  };
 
   return User;
 };
